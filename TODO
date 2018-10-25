@@ -1,0 +1,5 @@
+  - Determine how each Cloud environment handles DNS records.
+  - Determine how each Cloud environment handles VM instances and how to associate them with the development environment.
+  - Each development environment should have a running a vault container to handle secrets
+  - Each development environment should have an associated LetsEncrypt cert.
+  - Every container which is deployed to a given environment should have an Istio or Envoy sidecar attached to handle TLS
