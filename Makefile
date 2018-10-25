@@ -13,7 +13,7 @@ BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 
 # Symlink into GOPATH
 GITHUB_USERNAME=brandon-height
-BUILD_DIR=${GOPATH}/src/github.com/${GITHUB_USERNAME}/kray/${BINARY}
+BUILD_DIR=${GOPATH}/src/github.com/${GITHUB_USERNAME}/${BINARY}
 CURRENT_DIR=$(shell pwd)
 BUILD_DIR_LINK=$(shell readlink ${BUILD_DIR})
 
@@ -68,5 +68,6 @@ clean:
 	-rm -f ${TEST_REPORT}
 	-rm -f ${VET_REPORT}
 	-rm -f ${BINARY}-*
+	-rm -f ${BINARY}
 
 .PHONY: link linux darwin windows test vet fmt clean
