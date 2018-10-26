@@ -64,7 +64,8 @@ Say that we have an interface which when supplied with a "container ID", it is i
 type ContainerStopper interface {
     Stop(containerID string) error
 
-}```
+}
+```
 
 #
 ```
@@ -74,13 +75,13 @@ Instead of turning to a mocking library, all sorts of hand-rolled tricks can be 
 ```go
 type spyContainerStopper struct {
     id     string
-        err    error
+    err    error
 
 }
 
 func (s spyContainerStopper) Stop(id string) error {
     s.id = id
-        return n.err
+    return n.err
 
 }
 ```
@@ -97,15 +98,14 @@ The second allows for simple anonymous functions to be used in a test case as an
 
 ```go
 func TestSomething(t *testing.T) {
-var (
+    var (
         capturedID string
         spy        ContainerStopper = containerStopperFunc(func(id string) error {
-                    capturedID = id
-                                return errors.New("something went wrong")
+                   capturedID = id
+                   return errors.New("something went wrong")
                                         
         })
-            
-)
+    )
 
     //...
 
@@ -114,6 +114,6 @@ var (
 
 If you are dealing with a big pesky interface, it is recommended that you use something like [impl](https://github.com/josharian/impl) to generate a skeleton and speed things up.
 
-```Contributing
+# Contributing
 
 Fork it, PR it. I always welcome ideas and hope if nothing else this provides someone some inspiration of what not to do ;)
