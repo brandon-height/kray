@@ -6,6 +6,7 @@ import "github.com/brandon-height/kray/kube"
 type Interface interface {
 	Create(c *kube.Config) error
 	Delete(c *kube.Config) error
+	List(name string, c *kube.Config) error
 }
 
 // Upper ...

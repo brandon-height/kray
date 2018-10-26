@@ -43,6 +43,30 @@ func (g *GCP) Delete(c *kube.Config) error {
 	return nil
 }
 
+// List ...
+func (g *GCP) List(name string, c *kube.Config) error {
+	log.Println("Listing resources in", g.Name)
+	// initialize namespace object.
+	namespace := &kube.Namespace{}
+	namespaces, err := namespace.List(g.Name, c.Client)
+	if err != nil {
+		return err
+	}
+	if len(namespaces.Items) < 1 {
+		log.Println("No pod resources found")
+		return nil
+	}
+	// List out the pods
+	log.Println("Pods:")
+	for _, pod := range namespaces.Items {
+		log.Println(pod)
+	}
+	// List other resources
+	// List DNS Record for UDE
+	// List GCE DB Instance
+	return nil
+}
+
 // Up ...
 func (g *GCP) Up(c *kube.Config) error {
 	log.Println("Turning up", g.Name)

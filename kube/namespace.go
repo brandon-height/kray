@@ -22,5 +22,10 @@ func (n Namespace) Create(name string, client kubernetes.Interface) error {
 
 // Delete ...
 func (n Namespace) Delete(ns *v1.Namespace, client kubernetes.Interface) error {
-	return client.Core().Namespaces().Delete(ns.ObjectMeta.Name, &metav1.DeleteOptions{})
+	return client.CoreV1().Namespaces().Delete(ns.ObjectMeta.Name, &metav1.DeleteOptions{})
+}
+
+// List ...
+func (n Namespace) List(name string, client kubernetes.Interface) (*v1.PodList, error) {
+	return client.CoreV1().Pods(name).List(metav1.ListOptions{})
 }

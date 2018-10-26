@@ -30,6 +30,13 @@ func (a *AWS) Delete(c *kube.Config) error {
 	return nil
 }
 
+// List ...
+func (a *AWS) List(name string, c *kube.Config) error {
+	log.Println("Listing", a.Name)
+	// List this UDE in AWS
+	return nil
+}
+
 // Up ...
 func (a *AWS) Up(c *kube.Config) error {
 	log.Println("Turning up", a.Name)

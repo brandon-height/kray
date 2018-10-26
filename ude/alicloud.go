@@ -30,6 +30,13 @@ func (a *Alicloud) Delete(c *kube.Config) error {
 	return nil
 }
 
+// List ...
+func (a *Alicloud) List(name string, c *kube.Config) error {
+	log.Println("Listing", a.Name)
+	// Delete this UDE in Alicloud
+	return nil
+}
+
 // Up ...
 func (a *Alicloud) Up(c *kube.Config) error {
 	log.Println("Turning up", a.Name)

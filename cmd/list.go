@@ -15,23 +15,50 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 
+	"github.com/brandon-height/kray/kube"
+	"github.com/brandon-height/kray/ude"
 	"github.com/spf13/cobra"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "perform a list action for a ude resource",
+	Long:  `This command performs the steps to list the resources of a given UDE environment.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		// Get the flags
+		cloud, err := cmd.Parent().PersistentFlags().GetString("cloud")
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		namespace, err := cmd.Parent().PersistentFlags().GetString("namespace")
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// Setup a config
+		config := kube.NewConfig(namespace, KubeClient)
+
+		// Create the resource
+		switch cloud {
+		case "gcp":
+			if err := list(namespace, config, ude.NewGCP(namespace)); err != nil {
+				log.Fatalln(err)
+			}
+		case "alicloud":
+			if err := list(namespace, config, ude.NewAlicloud(namespace)); err != nil {
+				log.Fatalln(err)
+			}
+		case "aws":
+			if err := list(namespace, config, ude.NewAWS(namespace)); err != nil {
+				log.Fatalln(err)
+			}
+		default:
+			log.Fatalln("Unknown input")
+		}
 	},
 }
 
@@ -47,4 +74,8 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func list(name string, c *kube.Config, u ude.Interface) error {
+	return u.List(name, c)
 }

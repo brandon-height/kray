@@ -9,20 +9,6 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// Config ...
-type Config struct {
-	Name   string
-	Client kubernetes.Interface
-}
-
-// NewConfig returns a new Config type.
-func NewConfig(name string, client kubernetes.Interface) *Config {
-	return &Config{
-		Name:   name,
-		Client: client,
-	}
-}
-
 // NewClient ...
 func NewClient() (kubernetes.Interface, error) {
 	var (
