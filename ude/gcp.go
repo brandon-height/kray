@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/brandon-height/kray/kube"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // GCP ...
@@ -19,10 +18,11 @@ func NewGCP(name string) *GCP {
 
 // Create ...
 func (g *GCP) Create(c *kube.Config) error {
-	log.Println("Creating", g.Name)
+
 	// Create namespace
-	namespace := &kube.Namespace{}
-	namespace.Create(g.Name, c.Client)
+	if err := createNamespaceResource(g.Name, c.Client); err != nil {
+		return err
+	}
 	// Create DNS Record for UDE
 	// Create GCE DB Instance
 	return nil
@@ -30,14 +30,8 @@ func (g *GCP) Create(c *kube.Config) error {
 
 // Delete ...
 func (g *GCP) Delete(c *kube.Config) error {
-	log.Println("Deleting", g.Name)
 	// Delete namespace
-	namespace := &kube.Namespace{}
-	n, err := c.Client.CoreV1().Namespaces().Get(g.Name, metav1.GetOptions{})
-	if err != nil {
-		log.Println(err)
-	}
-	namespace.Delete(n, c.Client)
+	deleteNamespaceResource(g.Name, c.Client)
 	// Delete DNS Record for UDE
 	// Delete GCE DB Instance
 	return nil
@@ -45,21 +39,22 @@ func (g *GCP) Delete(c *kube.Config) error {
 
 // List ...
 func (g *GCP) List(name string, c *kube.Config) error {
+
+	var err error
+
 	log.Println("Listing resources in", g.Name)
-	// initialize namespace object.
-	namespace := &kube.Namespace{}
-	namespaces, err := namespace.List(g.Name, c.Client)
-	if err != nil {
-		return err
+	if g.PodList, err = listPodResource(g.Name, c.Client); err != nil {
+		log.Fatalln(err)
 	}
-	if len(namespaces.Items) < 1 {
+	// Verify we have resources to deal with.
+	if len(g.PodList.Items) < 1 {
 		log.Println("No pod resources found")
 		return nil
 	}
 	// List out the pods
 	log.Println("Pods:")
-	for _, pod := range namespaces.Items {
-		log.Println(pod)
+	for _, pod := range g.PodList.Items {
+		log.Println(pod.GetName())
 	}
 	// List other resources
 	// List DNS Record for UDE
@@ -69,6 +64,7 @@ func (g *GCP) List(name string, c *kube.Config) error {
 
 // Up ...
 func (g *GCP) Up(c *kube.Config) error {
+
 	log.Println("Turning up", g.Name)
 	// Turn up the GCE DB Instance
 	// Turn up the Replication Controllers
@@ -77,6 +73,7 @@ func (g *GCP) Up(c *kube.Config) error {
 
 // Down ...
 func (g *GCP) Down(c *kube.Config) error {
+
 	log.Println("Turning down", g.Name)
 	// Turn down the GCE DB Instance
 	// Turn down the Replication Controllers

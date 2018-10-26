@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/brandon-height/kray/kube"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // AWS ...
@@ -18,16 +19,35 @@ func NewAWS(name string) *AWS {
 
 // Create ...
 func (a *AWS) Create(c *kube.Config) error {
+
+	namespace := &kube.Namespace{}
+
 	log.Println("Creating", a.Name)
-	// Create this UDE in AWS
+
+	// Create namespace
+	namespace.Create(a.Name, c.Client)
+	// Create DNS Record for UDE
+	// Create DB Instance
 	return nil
+
 }
 
 // Delete ...
 func (a *AWS) Delete(c *kube.Config) error {
+
+	namespace := &kube.Namespace{}
+
 	log.Println("Deleting", a.Name)
-	// Delete this UDE in AWS
+	// Delete namespace
+	n, err := c.Client.CoreV1().Namespaces().Get(a.Name, metav1.GetOptions{})
+	if err != nil {
+		log.Println(err)
+	}
+	namespace.Delete(n, c.Client)
+	// Delete DNS Record for UDE
+	// Delete GCE DB Instance
 	return nil
+
 }
 
 // List ...
