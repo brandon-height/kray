@@ -67,9 +67,6 @@ type ContainerStopper interface {
 }
 ```
 
-#
-```
-
 Instead of turning to a mocking library, all sorts of hand-rolled tricks can be employed to swap this behavior out.
 
 ```go
